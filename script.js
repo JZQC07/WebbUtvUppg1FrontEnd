@@ -28,13 +28,13 @@ function showWelcomePage() {
     page.innerHTML = "";
     var print = "Hej och välkommen ";
 
-    fetch("users.json")
+    fetch("https://localhost:44361/api/filmstudio")
         .then(function (response) {
             return response.json();
         })
         .then(function (json) {
 
-            print = print + json[localStorage.getItem("userId")].userName;
+            print = print + localStorage.userName;
             page.insertAdjacentHTML("afterbegin", print);
 
         });
@@ -56,6 +56,7 @@ function showWelcomePage() {
 function showErrorPage() {
 
     page.insertAdjacentHTML("afterbegin", "<div>Dina uppgifter finns inte i vårat system. Har du glömt ditt lösenord?</div>");
+
 }
 
 
@@ -74,7 +75,12 @@ function showLoginPage() {
         var getUser = document.getElementById("user").value;
         var getPass = document.getElementById("password").value;
 
-        fetch("users.json")
+        fetch("https://localhost:44361/api/filmstudio")
+            .then(response => response.json())
+            .catch(error => console.log(error.message))
+            .then(json => FindUserAccount(json, getUser, getPass));
+
+        /*fetch("users.json")
             .then(function (response) {
                 return response.json();
             })
@@ -92,7 +98,7 @@ function showLoginPage() {
                 } else {
                     showErrorPage();
                 }
-            });
+            });*/
     });
 
     var registerButton = document.getElementById("saveNew");
@@ -104,7 +110,24 @@ function showLoginPage() {
 
 }
 
+function FindUserAccount(json, getUser, getPass) {
+    try {
+        var user = json.find(x => x.name === getUser && x.password === getPass && x.verified === true);
+        if (user != null) {
+            UserLogin(user);
+        } else {
+            showErrorPage();
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
+function UserLogin(user) {
+    localStorage.userId = user.id;
+    localStorage.userName = user.name;
+    showWelcomePage();
+}
 
 
 function showRegisterPage() {
@@ -129,8 +152,8 @@ function showRegisterPage() {
 function RegisterMovieStudio(name, password, verified) {
 
     page.innerHTML = "";
-    page.insertAdjacentHTML("beforeend", '<div class="RegisterText"><p>Your new account has been created! Please login using your new credentials.</p></div>');
     console.log(name, password);
+
 
     var newMovieStudio = {
         name: name,
@@ -141,23 +164,28 @@ function RegisterMovieStudio(name, password, verified) {
     fetch('https://localhost:44361/api/filmstudio', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
             },
-            body: JSON.stringify(newMovieStudio),
+            body: JSON.stringify(newMovieStudio)
         })
         .then(response => response.json())
         .then(newMovieStudio => {
             console.log('Success:', newMovieStudio);
-            showMovies();
         })
         .catch((err) => {
             console.error('Error:', err);
         });
-    showLoginPage();
+    page.insertAdjacentHTML("beforeend", '<div class="RegisterText"><p>Your new account has been created! Please login using your new credentials.</p></div>');
+    page.insertAdjacentHTML("beforeend", '<button id="Welcomepage">Login</button>')
+
+    var welcomePageButton = document.getElementById("Welcomepage");
+
+    welcomePageButton.addEventListener("click", function () {
+
+        showLoginPage();
+
+    })
 }
-
-
-
 
 function AddMovie(name, stock) {
 
