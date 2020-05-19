@@ -3,7 +3,16 @@ console.log(localStorage.getItem("userId"));
 
 var page = document.getElementById("content");
 var movieList = document.getElementById("movieList")
-AddMovie('Harry Potter', 3)
+AddMovie('Harry Potter', 3);
+AddMovie('Titanic', 2);
+AddMovie('xfiles', 4);
+AddMovie('Peter Pan', 1);
+
+RegisterMovieStudio('Jonatan', '1234', true);
+RegisterMovieStudio('Kalle', 'Kalle', true);
+RegisterMovieStudio('Peter', 'Peter', true);
+RegisterMovieStudio('Stellan', 'Stell', true);
+
 
 
 
@@ -42,10 +51,15 @@ function showWelcomePage() {
     });
 }
 
+
+
 function showErrorPage() {
 
     page.insertAdjacentHTML("afterbegin", "<div>Dina uppgifter finns inte i vårat system. Har du glömt ditt lösenord?</div>");
 }
+
+
+
 
 function showLoginPage() {
 
@@ -80,11 +94,43 @@ function showLoginPage() {
                 }
             });
     });
+
+    var registerButton = document.getElementById("saveNew");
+    registerButton.addEventListener("click", function () {
+        console.log("Tryck på register knappen!");
+        showRegisterPage();
+
+    });
+
 }
+
+
+
+
+function showRegisterPage() {
+    page.innerHTML = "";
+    page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>Enter Username and Password for your new account..</p></div>');
+    page.insertAdjacentHTML("beforeend", 'Username: <input type="text" id="newuser" class="RegisterForm" placeholder="Username"> Password: <input type="password" id="newpassword" class="RegisterForm" placeholder="Password"> <button id="registernew">Register</button>');
+
+    var registerNewButton = document.getElementById("registernew");
+    registerNewButton.addEventListener("click", function () {
+        console.log("Tryck på register new knappen!");
+        var name = document.getElementById("newuser").value;
+        var password = document.getElementById("newpassword").value;
+        RegisterMovieStudio(name, password, true);
+
+    });
+
+}
+
+
+
 
 function RegisterMovieStudio(name, password, verified) {
 
-    console.log("Add movie studio");
+    page.innerHTML = "";
+    page.insertAdjacentHTML("beforeend", '<div class="RegisterText"><p>Your new account has been created! Please login using your new credentials.</p></div>');
+    console.log(name, password);
 
     var newMovieStudio = {
         name: name,
@@ -92,7 +138,7 @@ function RegisterMovieStudio(name, password, verified) {
         verified: verified
     };
 
-    fetch('https://localhost:44361/api/Filmstudio', {
+    fetch('https://localhost:44361/api/filmstudio', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -102,11 +148,16 @@ function RegisterMovieStudio(name, password, verified) {
         .then(response => response.json())
         .then(newMovieStudio => {
             console.log('Success:', newMovieStudio);
+            showMovies();
         })
         .catch((err) => {
             console.error('Error:', err);
         });
+    showLoginPage();
 }
+
+
+
 
 function AddMovie(name, stock) {
 
@@ -115,7 +166,7 @@ function AddMovie(name, stock) {
         stock: stock
     };
 
-    fetch('https://localhost:44361/api/Film', {
+    fetch('https://localhost:44361/api/film', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -133,8 +184,9 @@ function AddMovie(name, stock) {
 
 
 
+
 function showMovies() {
-    fetch("https://localhost:44361/api/Film")
+    fetch("https://localhost:44361/api/film")
         .then(function (response) {
             return response.json();
         })
@@ -147,16 +199,9 @@ function showMovies() {
         });
 };
 
+
+
 var showMoviesButton = document.getElementById("rentMovies");
 showMoviesButton.addEventListener("click", function () {
     showMovies();
 });
-
-var registerButton = document.getElementById("saveNew");
-registerButton.addEventListener("click", function () {
-    userName = document.getElementById("firstname", "lastname").value;
-    name = document.getElementById("username").value;
-    password = document.getElementById("password").value;
-
-    RegisterMovieStudio(name.value, password.value, false);
-})

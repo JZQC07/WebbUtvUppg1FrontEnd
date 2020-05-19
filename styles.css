@@ -61,3 +61,13 @@ button {
     cursor: pointer;
     background-color: gray;
 }
+
+.RegisterForm {
+    color: black;
+    background-color: gray;
+}
+
+.RegisterText {
+    color: white;
+    font-size: 20px;
+}
