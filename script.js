@@ -23,7 +23,6 @@ if (localStorage.getItem("userId") !== "null") {
 }
 
 
-
 function showWelcomePage() {
     page.innerHTML = "";
     var print = "Hej och välkommen ";
@@ -147,6 +146,54 @@ function showRegisterPage() {
 }
 
 
+function showTrivia(FilmId) {
+    console.log(FilmId);
+
+    fetch("https://localhost:44361/api/FilmTrivia")
+        .then(response => response.json())
+        .then(trivias => trivias.filter(x => x.filmId == movieId))
+        .then(trivias => listTrivia(trivias))
+        .catch(err => console.log(err.message));
+
+}
+
+function listTrivia(trivias) {
+    console.log(trivias);
+    trivias.forEach(trivia => {
+        page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>${trivia.trivia}</p></div>')
+    })
+}
+
+
+function CreateNewTrivia(FilmId) {
+
+    console.log(FilmId);
+
+    page.innerHTML = "";
+    page.insertAdjacentHTML("beforeend", '<form class="form" id="form"> <label for "triviaText">Enter trivia here: </label> <input type="text" id="triviaText" name="studioName"> <button onclick="PostNewTrivia(${FilmId})" type="submit" class="button" id="postTrivia">Save Trivia</button></form>');
+
+}
+
+function PostNewTrivia(FilmId) {
+
+    var triviaText = document.getElementById("triviaText").value;
+    console.log(triviaText);
+
+    fetch("https://localhost:44361/api/FilmTrivia", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify({
+                FilmId: FilmId,
+                Trivia: triviaText
+            })
+        })
+        .then(response => response.json())
+        .catch(err => console.log(err.message));
+    page.insertAdjacentHTML("beforebegin", '<div class="RegisterText"><p>Thank you for posting trivia!</p></div>')
+
+}
 
 
 function RegisterMovieStudio(name, password, verified) {
