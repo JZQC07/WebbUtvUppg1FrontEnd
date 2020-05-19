@@ -161,9 +161,9 @@ function listTrivia(trivias) {
     console.log(trivias);
     trivias.forEach(trivia => {
         page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>${trivia.trivia}</p></div>')
-    })
+        alert(trivia.trivia)
+    });
 }
-
 
 function CreateNewTrivia(FilmId) {
 
@@ -194,7 +194,6 @@ function PostNewTrivia(FilmId) {
     page.insertAdjacentHTML("beforebegin", '<div class="RegisterText"><p>Thank you for posting trivia!</p></div>')
 
 }
-
 
 function RegisterMovieStudio(name, password, verified) {
 
@@ -258,9 +257,8 @@ function AddMovie(name, stock) {
 };
 
 
-
-
 function showMovies() {
+    updateMovieList();
     fetch("https://localhost:44361/api/film")
         .then(function (response) {
             return response.json();
@@ -269,10 +267,20 @@ function showMovies() {
             console.log("showMovies", json);
             for (i = 0; i < json.length; i++) {
                 console.log(json[i].name)
-                movieList.insertAdjacentHTML("beforeend", "<div><p>(" + json[i].id + ")" + json[i].name + "</p></div></div>")
+                movieList.insertAdjacentHTML("beforeend", "<div><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p></div></div>");
             }
         });
 };
+
+function updateMovieList() {
+    for (i = 0; i < movieList.length; i++) {
+        if (movieList[i].stock < 1) {
+            delete movieList[i];
+        }
+    }
+};
+
+
 
 
 
