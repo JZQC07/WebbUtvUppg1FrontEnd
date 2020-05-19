@@ -1,0 +1,21 @@
+[{
+        "userName": "Jonatan Schultz",
+        "userLogin": "Jonte",
+        "userPassword": "1996"
+    },
+    {
+        "userName": "Janne Kemi",
+        "userLogin": "Janne",
+        "userPassword": "1234"
+    },
+    {
+        "userName": "Stefan Sigurdsson",
+        "userLogin": "Stegurd",
+        "userPassword": "qwer"
+    },
+    {
+        "userName": "Allan Allansson",
+        "userLogin": "Allan",
+        "userPassword": "314"
+    }
+]
