@@ -146,54 +146,7 @@ function showRegisterPage() {
 }
 
 
-function showTrivia(FilmId) {
-    console.log(FilmId);
 
-    fetch("https://localhost:44361/api/FilmTrivia")
-        .then(response => response.json())
-        .then(trivias => trivias.filter(x => x.filmId == movieId))
-        .then(trivias => listTrivia(trivias))
-        .catch(err => console.log(err.message));
-
-}
-
-function listTrivia(trivias) {
-    console.log(trivias);
-    trivias.forEach(trivia => {
-        page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>${trivia.trivia}</p></div>')
-        alert(trivia.trivia)
-    });
-}
-
-function CreateNewTrivia(FilmId) {
-
-    console.log(FilmId);
-
-    page.innerHTML = "";
-    page.insertAdjacentHTML("beforeend", '<form class="form" id="form"> <label for "triviaText">Enter trivia here: </label> <input type="text" id="triviaText" name="studioName"> <button onclick="PostNewTrivia(${FilmId})" type="submit" class="button" id="postTrivia">Save Trivia</button></form>');
-
-}
-
-function PostNewTrivia(FilmId) {
-
-    var triviaText = document.getElementById("triviaText").value;
-    console.log(triviaText);
-
-    fetch("https://localhost:44361/api/FilmTrivia", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=UTF-8'
-            },
-            body: JSON.stringify({
-                FilmId: FilmId,
-                Trivia: triviaText
-            })
-        })
-        .then(response => response.json())
-        .catch(err => console.log(err.message));
-    page.insertAdjacentHTML("beforebegin", '<div class="RegisterText"><p>Thank you for posting trivia!</p></div>')
-
-}
 
 function RegisterMovieStudio(name, password, verified) {
 
@@ -265,29 +218,60 @@ showMoviesButton.addEventListener("click", function () {
 
 
 
+function showTrivia(FilmId) {
+    console.log("Inne i showTrivia metoden");
 
+    fetch("https://localhost:44361/api/FilmTrivia")
+        .then(response => response.json())
+        .then(trivias => trivias.filter(x => x.filmId == movieId))
+        .then(trivias => listTrivia(trivias))
+        .catch(err => console.log(err.message));
 
-var rentMovieButton = document.getElementById("rentMovie");
-rentMovieButton.addEventListener("click", function () {
-    console.log("Tryck på RentMovie knappen.");
-    RentMovie(FilmId);
-});
+}
 
-var showTriviaButton = document.getElementById("showTrivia");
-showTriviaButton.addEventListener("click", function () {
-    console.log("Tryck på ShowTrivia knappen.");
-    showTrivia(FilmId);
-});
+function listTrivia(trivias) {
+    console.log("Inne i listTrivia metoden.");
+    trivias.forEach(trivia => {
+        page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>${trivia.trivia}</p></div>')
+        alert(trivia.trivia)
+    });
+}
 
-var saveTriviaButton = document.getElementById("SaveTrivia");
-saveTriviaButton.addEventListener("click", function () {
-    console.log("Tryck på SaveTrivia knappen.");
-    CreateNewTrivia(FilmId);
-});
+function CreateNewTrivia(FilmId) {
+
+    console.log("Inne i CreateNewTrivia metoden.");
+
+    page.innerHTML = "";
+    page.insertAdjacentHTML("beforeend", '<form class="form" id="form"> <label for "triviaText">Enter trivia here: </label> <input type="text" id="triviaText" name="studioName"> <button onclick="PostNewTrivia(' + FilmId + ');" type="submit" class="button" id="postTrivia">Save Trivia</button></form>');
+
+}
+
+function PostNewTrivia(FilmId) {
+
+    var triviaText = document.getElementById("triviaText").value;
+    console.log("Inne i PostNewTrivia metoden.");
+
+    fetch("https://localhost:44361/api/FilmTrivia", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify({
+                FilmId: FilmId,
+                Trivia: triviaText
+            })
+        })
+        .then(response => response.json())
+        .catch(err => console.log(err.message));
+    page.insertAdjacentHTML("beforebegin", '<div class="RegisterText"><p>Thank you for posting trivia!</p></div>');
+
+}
 
 
 
 function showMovies() {
+
+    var src = "/titanic.jpg";
     console.log("Inne i showMovies metoden.");
     updateMovieList();
     fetch("https://localhost:44361/api/film")
@@ -298,12 +282,30 @@ function showMovies() {
             console.log("showMovies", json);
             for (i = 0; i < json.length; i++) {
                 console.log(json[i].name)
-                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie' >Rent Movie</button> <button class='button' id='showTrivia' >Show Trivia</button> <button class='button' id='SaveTrivia' >Save Trivia</button></div>");
+                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + src + "'/><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
             }
-        });
+        })
+
+    /*
+    var rentMovieButton = document.getElementById("rentMovie1");
+    rentMovieButton.addEventListener("click", function () {
+        console.log("Tryck på RentMovie knappen.");
+
+    })
+
+    var showTriviaButton = document.getElementById("showTrivia1");
+    showTriviaButton.addEventListener("click", function () {
+        console.log("Tryck på ShowTrivia knappen.");
+
+    })
+
+    var saveTriviaButton = document.getElementById("SaveTrivia1");
+    saveTriviaButton.addEventListener("click", function () {
+        console.log("Tryck på SaveTrivia knappen.");
+
+    })
+    */
 }
-
-
 
 
 

@@ -54,7 +54,7 @@ input[type=password] {
     font-size: 14px;
 }
 
-button {
+.button {
     font-family: "Roboto", sans-serif;
     outline: 0;
     width: fit-content;
