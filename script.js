@@ -209,7 +209,6 @@ function AddMovie(name, stock) {
         });
 }
 
-
 var showMoviesButton = document.getElementById("rentMovies");
 showMoviesButton.addEventListener("click", function () {
     console.log("Tryck på showMovies knappen");
@@ -271,8 +270,13 @@ function PostNewTrivia(FilmId) {
 
 function showMovies() {
 
-    var src = "/titanic.jpg";
+    var srcTitanic = "/titanic.jpg";
+    var srcXfiles = "/xfiles.png";
+    var srcHarryPotter = "/HarryPotter.png";
+    var srcPeterPan = "/PeterPan.png";
     console.log("Inne i showMovies metoden.");
+
+
     updateMovieList();
     fetch("https://localhost:44361/api/film")
         .then(function (response) {
@@ -282,7 +286,7 @@ function showMovies() {
             console.log("showMovies", json);
             for (i = 0; i < json.length; i++) {
                 console.log(json[i].name)
-                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + src + "'/><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
+                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + srcXfiles + "'/><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
             }
         })
 
@@ -306,7 +310,6 @@ function showMovies() {
     })
     */
 }
-
 
 
 function updateMovieList() {
