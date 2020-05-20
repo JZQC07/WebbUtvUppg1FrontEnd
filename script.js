@@ -240,10 +240,9 @@ showMoviesButton.addEventListener("click", function () {
 //HÄR SKALL JAG KUNNA VISA TRIVIA FÖR VARJE FILM
 function showTrivia(FilmId) {
     console.log("Inne i showTrivia metoden");
-    console.log(FilmId);
     fetch("https://localhost:44361/api/filmtrivia")
         .then(response => response.json())
-        .then(trivias => trivias.filter(x => x.filmId == movieId))
+        .then(trivias => trivias.filter(x => x.filmId == FilmId))
         .then(trivias => listTrivia(trivias))
         .catch(err => console.log(err.message));
 
@@ -253,7 +252,7 @@ function listTrivia(trivias) {
     console.log("Inne i listTrivia metoden.");
     trivias.forEach(trivia => {
         page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>${trivia.trivia}</p></div>')
-        alert(trivia.trivia)
+        alert(trivia.trivia);
     });
 }
 
@@ -283,14 +282,14 @@ function PostNewTrivia(FilmId) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                FilmId: FilmId,
+                FilmId: Number(FilmId),
                 Trivia: Trivia
             }),
         })
         .then(response => response.json())
-        .then(data => {
-            console.log("gick bra", data);
-        })
+        /*.then(data => {
+        //console.log("Success! ", data);
+        })*/
         .catch((error) => {
             console.log('error', error);
         });
@@ -316,7 +315,7 @@ function showMovies() {
             console.log("showMovies", json);
             for (i = 0; i < json.length; i++) {
                 console.log(json[i].name)
-                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + srcXfiles + "'/><p> Id: " + json[i].id + "Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
+                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + srcXfiles + "'/><p> Id: " + json[i].id + " | Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
             }
         })
 
