@@ -237,7 +237,7 @@ showMoviesButton.addEventListener("click", function () {
 });
 
 
-
+//HÄR SKALL JAG KUNNA VISA TRIVIA FÖR VARJE FILM
 function showTrivia(FilmId) {
     console.log("Inne i showTrivia metoden");
     console.log(FilmId);
@@ -342,6 +342,17 @@ function showMovies() {
 }
 
 
+
+//Ta bort 1 från stock när en film har hyrts.
+function AdjustQuantityForMovies() {
+
+}
+
+
+
+
+
+
 function updateMovieList() {
     for (i = 0; i < movieList.length; i++) {
         if (movieList[i].stock < 1) {
@@ -350,6 +361,7 @@ function updateMovieList() {
     }
 }
 
+//Kunna hyra film!
 function RentMovie(FilmId) {
     console.log(FilmId);
     console.log(localStorage.userId);
