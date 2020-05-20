@@ -268,27 +268,23 @@ function CreateNewTrivia(FilmId) {
 }
 
 //Andra funktionen man kastas in i.
-function PostNewTrivia(FilmId, Trivia) {
-    console.log("FilmId: " + FilmId + "Trivia Text: " + Trivia);
+function PostNewTrivia(FilmId) {
+
     var Trivia = document.getElementById("triviaText").value;
+    console.log("FilmId: " + FilmId + "Trivia Text: " + Trivia);
     console.log("Inne i PostNewTrivia metoden.");
-
-
-    var newTrivia = Trivia.toString();
-    var newFilmId = FilmId;
-    var newerFilmId = parseInt(newFilmId);
 
     alert("Tack för att du postar trivia " + localStorage.userName + "! :)");
 
-    fetch('https://localhost:44361/api/FilmTrivia', {
+    fetch('https://localhost:44361/api/filmtrivia', {
 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                FilmId: newerFilmId,
-                Trivia: newTrivia
+                FilmId: FilmId,
+                Trivia: Trivia
             }),
         })
         .then(response => response.json())
