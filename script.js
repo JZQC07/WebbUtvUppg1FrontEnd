@@ -5,7 +5,7 @@ var page = document.getElementById("content");
 var movieList = document.getElementById("movieList")
 AddMovie('Harry Potter', 3);
 AddMovie('Titanic', 2);
-AddMovie('xfiles', 4);
+AddMovie('Xfiles', 4);
 AddMovie('Peter Pan', 1);
 
 RegisterMovieStudio('Jonatan', '1234', true);
@@ -222,7 +222,7 @@ function RegisterMovieStudio(name, password, verified) {
             console.error('Error:', err);
         });
     page.insertAdjacentHTML("beforeend", '<div class="RegisterText"><p>Your new account has been created! Please login using your new credentials.</p></div>');
-    page.insertAdjacentHTML("beforeend", '<button id="Welcomepage">Login</button>')
+    page.insertAdjacentHTML("beforeend", '<button id="Welcomepage">Login</button>');
 
     var welcomePageButton = document.getElementById("Welcomepage");
 
@@ -254,10 +254,41 @@ function AddMovie(name, stock) {
         .catch((error) => {
             console.log('Error:', error);
         });
-};
+}
+
+
+var showMoviesButton = document.getElementById("rentMovies");
+showMoviesButton.addEventListener("click", function () {
+    console.log("Tryck på showMovies knappen");
+    showMovies();
+});
+
+
+
+
+
+var rentMovieButton = document.getElementById("rentMovie");
+rentMovieButton.addEventListener("click", function () {
+    console.log("Tryck på RentMovie knappen.");
+    RentMovie(FilmId);
+});
+
+var showTriviaButton = document.getElementById("showTrivia");
+showTriviaButton.addEventListener("click", function () {
+    console.log("Tryck på ShowTrivia knappen.");
+    showTrivia(FilmId);
+});
+
+var saveTriviaButton = document.getElementById("SaveTrivia");
+saveTriviaButton.addEventListener("click", function () {
+    console.log("Tryck på SaveTrivia knappen.");
+    CreateNewTrivia(FilmId);
+});
+
 
 
 function showMovies() {
+    console.log("Inne i showMovies metoden.");
     updateMovieList();
     fetch("https://localhost:44361/api/film")
         .then(function (response) {
@@ -267,10 +298,14 @@ function showMovies() {
             console.log("showMovies", json);
             for (i = 0; i < json.length; i++) {
                 console.log(json[i].name)
-                movieList.insertAdjacentHTML("beforeend", "<div><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p></div></div>");
+                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><p> Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie' >Rent Movie</button> <button class='button' id='showTrivia' >Show Trivia</button> <button class='button' id='SaveTrivia' >Save Trivia</button></div>");
             }
         });
-};
+}
+
+
+
+
 
 function updateMovieList() {
     for (i = 0; i < movieList.length; i++) {
@@ -278,13 +313,24 @@ function updateMovieList() {
             delete movieList[i];
         }
     }
-};
+}
 
+function RentMovie(FilmId) {
+    console.log(FilmId);
+    console.log(localStorage.userId);
 
+    fetch('https://localhost:44361/api/rentedFilm', {
+            method: 'POST',
+            body: JSON.stringify({
+                filmId: Number(FilmId),
+                studioId: Number(localStorage.userId)
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(response => response.json())
+        .catch(err => console.log(err.message));
 
-
-
-var showMoviesButton = document.getElementById("rentMovies");
-showMoviesButton.addEventListener("click", function () {
-    showMovies();
-});
+    page.insertAdjacentHTML("beforeend", "<div><p>Lånet genomfördes. Tack för att du hyr film av oss!</p></div>");
+}
