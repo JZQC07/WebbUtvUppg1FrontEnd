@@ -257,17 +257,19 @@ function listTrivia(trivias) {
     });
 }
 
+//Första funktionen man kastas in i när man vill lägga till Trivia för film.
 function CreateNewTrivia(FilmId) {
 
     console.log("Inne i CreateNewTrivia metoden.");
-
+    console.log("FilmId = " + FilmId);
     page.innerHTML = "";
     page.insertAdjacentHTML("beforeend", '<form class="form" id="form"> <input type="text" id="triviaText" placeholder="Enter trivia text here.." name="studioName"> <button onclick="PostNewTrivia(' + FilmId + ');" type="submit" class="button" id="postTrivia">Save Trivia</button></form>');
 
 }
 
-function PostNewTrivia(FilmId) {
-    console.log("FilmId: " + FilmId);
+//Andra funktionen man kastas in i.
+function PostNewTrivia(FilmId, Trivia) {
+    console.log("FilmId: " + FilmId + "Trivia Text: " + Trivia);
     var Trivia = document.getElementById("triviaText").value;
     console.log("Inne i PostNewTrivia metoden.");
 
@@ -276,10 +278,9 @@ function PostNewTrivia(FilmId) {
     var newFilmId = FilmId;
     var newerFilmId = parseInt(newFilmId);
 
-    alert("FilmId: " + FilmId + " Trivia Text:" + Trivia);
     alert("Tack för att du postar trivia " + localStorage.userName + "! :)");
 
-    fetch('https://localhost:44361/api/filmtrivia', {
+    fetch('https://localhost:44361/api/FilmTrivia', {
 
             method: 'POST',
             headers: {
