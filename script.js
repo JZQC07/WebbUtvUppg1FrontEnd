@@ -90,25 +90,7 @@ function showLoginPage() {
             .catch(error => console.log(error.message))
             .then(json => FindUserAccount(json, getUser, getPass));
 
-        /*fetch("users.json")
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (json) {
 
-                for (i = 0; i < json.length; i++) {
-                    if (getUser == json[i].userLogin && getPass == json[i].userPassword) {
-                        console.log("Ja, det stämmer!");
-                        localStorage.setItem("userId", i);
-                    }
-                }
-
-                if (localStorage.getItem("userId") !== null) {
-                    showWelcomePage();
-                } else {
-                    showErrorPage();
-                }
-            });*/
     });
 
     var registerButton = document.getElementById("saveNew");
@@ -203,9 +185,6 @@ function AddMovie(NewMovieName, stock) {
     var stockString = stock.toString();
     Name = NewMovieName;
     var parsedStockString = parseInt(stockString);
-    // var data = {
-    //     Name: NewMovieName,
-    // };
 
     fetch('https://localhost:44361/api/film', {
             method: 'POST',
@@ -228,9 +207,6 @@ function AddMovie(NewMovieName, stock) {
 }
 
 
-
-
-
 var showMoviesButton = document.getElementById("rentMovies");
 showMoviesButton.addEventListener("click", function () {
     console.log("Tryck på showMovies knappen");
@@ -238,7 +214,7 @@ showMoviesButton.addEventListener("click", function () {
 });
 
 
-//HÄR SKALL JAG KUNNA VISA TRIVIA FÖR VARJE FILM
+//LOGIK FÖR ATT VISA TRIVIA FÖR VARJE FILM -- FUNKAR!
 function showTrivia(FilmId) {
     console.log("Inne i showTrivia metoden");
     fetch("https://localhost:44361/api/filmtrivia")
@@ -249,6 +225,7 @@ function showTrivia(FilmId) {
 
 }
 
+//Skriver ut TRIVIA på sidan
 function listTrivia(trivias) {
     console.log("Inne i listTrivia metoden.");
     trivias.forEach(trivia => {
@@ -266,27 +243,29 @@ function CreateNewTrivia(FilmId) {
 
 }
 
-//Andra funktionen man kastas in i.
+//Funktionen man kastas in i när man postar trivia.
 function PostNewTrivia(FilmId) {
 
     var Trivia = document.getElementById("triviaText").value;
     console.log("FilmId: " + FilmId + " Trivia Text: " + Trivia);
     console.log("Inne i PostNewTrivia metoden.");
 
-    alert("Tack för att du postar trivia " + localStorage.userName + "! :)");
-
-    fetch("https://localhost:44361/api/filmtrivia", {
+    fetch('https://localhost:44361/api/filmtrivia', {
             method: 'POST',
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            },
             body: JSON.stringify({
                 FilmId: Number(FilmId),
                 Trivia: Trivia
             }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
+
         })
         .then(response => response.json())
+        .then(json => console.log(json))
         .catch(err => console.log(err.message));
+
+    alert("Tack för att du postar trivia " + localStorage.userName + "! :)");
 }
 
 function showMovies() {
@@ -350,4 +329,47 @@ function RentMovie(FilmId) {
         .catch(err => console.log(err.message));
 
     page.insertAdjacentHTML("beforeend", "<div><p>Lånet genomfördes. Tack för att du hyr film av oss!</p></div>");
+}
+
+
+
+
+
+
+
+//LÄMNA TILLBAKA FILM
+
+function ReturnMovie(FilmId) {
+    var studioId = localStorage.userId;
+
+    fetch("https://localhost:44361/api/rentedfilm")
+        .then(response => response.json())
+        .then(json => json.filter(x => x.filmId === FilmId))
+        .then(json => json.filter(x => x.returned === false))
+        .then(json => json.find(y => y.studioId == studioId))
+        .then(json => RemoveRental(json))
+        .catch(err => console.log(err.message));
+}
+
+function RemoveRental(movieToReturn) {
+
+    console.log("Film att lämna tillbaka: " + movieToReturn.Name);
+
+    fetch("https://localhost:44361/api/rentedfilm" + movieToReturn.id, {
+            method: 'PUT',
+            body: JSON.stringify({
+                "id": movieToReturn.id,
+                "filmId": movieToReturn.filmId,
+                "studioId": movieToReturn.studioId,
+                "returned": true
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(response => response.json())
+        // .then(json => console.log(json))
+        .catch(err => console.log(err.message));
+
+    alert("Tack " + localStorage.userName + " för att du lämnat tillbaka filmen " + movieToReturn.Name);
 }
