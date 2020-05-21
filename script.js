@@ -328,7 +328,7 @@ function RentMovie(FilmId) {
         .then(response => response.json())
         .catch(err => console.log(err.message));
 
-    page.insertAdjacentHTML("beforeend", "<div><p>Lånet genomfördes. Tack för att du hyr film av oss!</p></div>");
+    page.insertAdjacentHTML("beforeend", "<div><p>Du lånade filmen med ID " + FilmId + " Tack för att du hyr film av oss!</p></div>");
 }
 
 
