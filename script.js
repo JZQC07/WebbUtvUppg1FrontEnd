@@ -286,7 +286,7 @@ function showMovies() {
             console.log("showMovies", json);
             for (i = 0; i < json.length; i++) {
                 console.log(json[i].name)
-                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + srcXfiles + "'/><p> Id: " + json[i].id + " | Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
+                movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + srcXfiles + "'/><p> Id: " + json[i].id + " | Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button> <button class='button' id='returnMovie' onclick='ReturnMovie(" + json[i].id + ");' >Return Movie</button></div>");
             }
         })
 }
@@ -341,35 +341,21 @@ function RentMovie(FilmId) {
 
 function ReturnMovie(FilmId) {
     var studioId = localStorage.userId;
-
+    console.log("Inne i returnMovie metoden. FilmId att lämna tillbaka: " + FilmId + " StudioId: " + studioId);
     fetch("https://localhost:44361/api/rentedfilm")
         .then(response => response.json())
-        .then(json => json.filter(x => x.filmId === FilmId))
-        .then(json => json.filter(x => x.returned === false))
-        .then(json => json.find(y => y.studioId == studioId))
-        .then(json => RemoveRental(json))
-        .catch(err => console.log(err.message));
+        .catch(error => console.log(error.message))
+        .then(json => RemoveRental(FilmId));
+
 }
 
-function RemoveRental(movieToReturn) {
+function RemoveRental(FilmId) {
+    console.log("Inne i RemoveRental metoden");
+    console.log("Film att lämna tillbaka: " + FilmId);
 
-    console.log("Film att lämna tillbaka: " + movieToReturn.Name);
-
-    fetch("https://localhost:44361/api/rentedfilm" + movieToReturn.id, {
-            method: 'PUT',
-            body: JSON.stringify({
-                "id": movieToReturn.id,
-                "filmId": movieToReturn.filmId,
-                "studioId": movieToReturn.studioId,
-                "returned": true
-            }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
+    fetch("https://localhost:44361/api/rentedfilm/" + FilmId, {
+            method: 'DELETE',
         })
         .then(response => response.json())
-        // .then(json => console.log(json))
-        .catch(err => console.log(err.message));
-
-    alert("Tack " + localStorage.userName + " för att du lämnat tillbaka filmen " + movieToReturn.Name);
-}
+    alert("Tack " + localStorage.userName + " för att du lämnat tillbaka filmen " + FilmId);
+};
