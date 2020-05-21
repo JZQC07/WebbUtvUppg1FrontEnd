@@ -224,6 +224,7 @@ function AddMovie(NewMovieName, stock) {
         .catch((error) => {
             console.log('Error:', error);
         });
+    alert("Ny film tillagd i biblioteket. Namn: " + NewMovieName + " Antal: " + stock);
 }
 
 
@@ -251,8 +252,7 @@ function showTrivia(FilmId) {
 function listTrivia(trivias) {
     console.log("Inne i listTrivia metoden.");
     trivias.forEach(trivia => {
-        page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>${trivia.trivia}</p></div>')
-        alert(trivia.trivia);
+        page.insertAdjacentHTML("afterbegin", '<div class="RegisterText"><p>Trivia: (' + trivia.trivia + ')</p></div>')
     });
 }
 
@@ -260,7 +260,7 @@ function listTrivia(trivias) {
 function CreateNewTrivia(FilmId) {
 
     console.log("Inne i CreateNewTrivia metoden.");
-    console.log("FilmId = " + FilmId);
+    console.log("FilmId: " + FilmId);
     page.innerHTML = "";
     page.insertAdjacentHTML("beforeend", '<form class="form" id="form"> <input type="text" id="triviaText" placeholder="Enter trivia text here.." name="studioName"> <button onclick="PostNewTrivia(' + FilmId + ');" type="submit" class="button" id="postTrivia">Save Trivia</button></form>');
 
@@ -270,32 +270,24 @@ function CreateNewTrivia(FilmId) {
 function PostNewTrivia(FilmId) {
 
     var Trivia = document.getElementById("triviaText").value;
-    console.log("FilmId: " + FilmId + "Trivia Text: " + Trivia);
+    console.log("FilmId: " + FilmId + " Trivia Text: " + Trivia);
     console.log("Inne i PostNewTrivia metoden.");
 
     alert("Tack för att du postar trivia " + localStorage.userName + "! :)");
 
-    fetch('https://localhost:44361/api/filmtrivia', {
-
+    fetch("https://localhost:44361/api/filmtrivia", {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify({
                 FilmId: Number(FilmId),
                 Trivia: Trivia
             }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
         })
         .then(response => response.json())
-        /*.then(data => {
-        //console.log("Success! ", data);
-        })*/
-        .catch((error) => {
-            console.log('error', error);
-        });
+        .catch(err => console.log(err.message));
 }
-
-
 
 function showMovies() {
 
@@ -318,26 +310,6 @@ function showMovies() {
                 movieList.insertAdjacentHTML("beforeend", "<div class='movieDiv'><img src='" + srcXfiles + "'/><p> Id: " + json[i].id + " | Title: " + json[i].name + " | Stock: " + json[i].stock + " </p> <button class='button' id='rentMovie1' onclick='RentMovie(" + json[i].id + ");' >Rent Movie</button> <button class='button' id='showTrivia1' onclick='showTrivia(" + json[i].id + ");' >Show Trivia</button> <button class='button' id='SaveTrivia1' onclick='CreateNewTrivia(" + json[i].id + ");' >Save Trivia</button></div>");
             }
         })
-
-    /*
-    var rentMovieButton = document.getElementById("rentMovie1");
-    rentMovieButton.addEventListener("click", function () {
-        console.log("Tryck på RentMovie knappen.");
-
-    })
-
-    var showTriviaButton = document.getElementById("showTrivia1");
-    showTriviaButton.addEventListener("click", function () {
-        console.log("Tryck på ShowTrivia knappen.");
-
-    })
-
-    var saveTriviaButton = document.getElementById("SaveTrivia1");
-    saveTriviaButton.addEventListener("click", function () {
-        console.log("Tryck på SaveTrivia knappen.");
-
-    })
-    */
 }
 
 
@@ -360,16 +332,15 @@ function updateMovieList() {
     }
 }
 
-//Kunna hyra film!
+//Kunna hyra film FUNKAR NÄR INLOGGAD!
 function RentMovie(FilmId) {
-    console.log(FilmId);
-    console.log(localStorage.userId);
+    console.log(" Inne i RentMovie metoden. FilmId: " + FilmId + " userId: " + localStorage.userId);
 
-    fetch('https://localhost:44361/api/rentedfilm', {
+    fetch("https://localhost:44361/api/rentedfilm", {
             method: 'POST',
             body: JSON.stringify({
-                filmId: Number(FilmId),
-                studioId: Number(localStorage.userId)
+                FilmId: Number(FilmId),
+                StudioId: Number(localStorage.userId)
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
